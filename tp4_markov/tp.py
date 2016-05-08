@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 """
     FAA Partie 2: TP4 Markov
-    Auteur: Honoré Nintunze
+    Auteur: Honoré Nintunze et Matthieu Caron
 """
-__author__ = 'honore-nintunze'
 
 import numpy as np
 import re
