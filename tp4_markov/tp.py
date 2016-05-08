@@ -145,7 +145,7 @@ for i in range(5):
     _,res_phrase = predict_word_with_dico(dictionnaire,res_phrase)
 
 print "Prédiction de:", chaine
-print "Résultat 1:\t",res_phrase
+print "Résultat 1:\t",res_phrase # le but de la vie est un des annees de la ville
 
 print "######################################################"
 print "###### Prédiction avec une chaîne markovienne d'ordre 2 ######"
@@ -155,7 +155,7 @@ for i in range(10):
     _,res_phrase = predict_word_with_dico_ordre2(dictionnaire,res_phrase)
 
 print "Prédiction de:", chaine
-print "Résultat 2:\t",res_phrase
+print "Résultat 2:\t",res_phrase # le but de la vie est limitee a l'echelon inferieur.
 
 print "######################################################"
 print "###### Prédiction avec une chaîne markovienne d'ordre 3 ######"
@@ -165,4 +165,4 @@ for i in range(5):
     _,res_phrase = predict_word_with_dico_ordre3(dictionnaire,res_phrase)
 
 print "Prédiction de:", chaine
-print "Résultat 3:\t",res_phrase
+print "Résultat 3:\t",res_phrase # le but de la vie est limitee a l'echelon inferieur.
