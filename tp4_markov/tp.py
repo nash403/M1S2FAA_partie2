@@ -51,7 +51,6 @@ def build_dico(sentences): # le dictionnaire est ici la matrice de transition no
 def predict_word_with_dico(dico,uncomplete_sentence):
     phrase_normalisee = normalise(uncomplete_sentence)
     words = read_words_from_line(phrase_normalisee)
-    print "Prédiction de:", uncomplete_sentence
     last = words[-1]
     if last in dico:
         predictable = ""
@@ -71,9 +70,9 @@ def predict_word_with_dico(dico,uncomplete_sentence):
 def predict_word_with_dico_ordre2(dico,uncomplete_sentence):
     phrase_normalisee = normalise(uncomplete_sentence)
     words = read_words_from_line(phrase_normalisee)
-    print "Prédiction de:", uncomplete_sentence
     last = words[-1]
     before_last = words[-2]
+    # Il faut calculer la probabilité de tirer un mot sachant que le dernier mot est sorti après l'avant dernier mot
     proba_last = 1.
     if before_last in dico:
         if last in dico[before_last]:
@@ -111,20 +110,23 @@ dictionnaire = build_dico(words_in_sentences)
 # print words_in_sentences[40:70]
 
 # Résultat de l'apprentissage
+chaine = "Le but de la vie est"
 print "######################################################"
-print "###### Prédiction avec une chaîne d'ordre 1 ######"
+print "###### Prédiction avec une chaîne markovienne d'ordre 1 ######"
 
-_,res_phrase = predict_word_with_dico(dictionnaire,"Le but de la vie est")
+_,res_phrase = predict_word_with_dico(dictionnaire,chaine)
 for i in range(15):
     _,res_phrase = predict_word_with_dico(dictionnaire,res_phrase)
 
+print "Prédiction de:", chaine
 print "Résultat 1:\t",res_phrase
 
 print "######################################################"
-print "###### Prédiction avec une chaîne d'ordre 1 ######"
+print "###### Prédiction avec une chaîne markovienne d'ordre 1 ######"
 
-_,res_phrase = predict_word_with_dico_ordre2(dictionnaire,"Le but de la vie est")
+_,res_phrase = predict_word_with_dico_ordre2(dictionnaire,chaine)
 for i in range(15):
     _,res_phrase = predict_word_with_dico_ordre2(dictionnaire,res_phrase)
 
+print "Prédiction de:", chaine
 print "Résultat 2:\t",res_phrase
