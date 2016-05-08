@@ -47,6 +47,7 @@ def build_dico(sentences): # le dictionnaire est ici la matrice de transition no
                 dico[word][follower] = 1
     return dico
 
+### FONCTIONS DE PREDICTION ###
 def predict_word_with_dico(dico,uncomplete_sentence):
     phrase_normalisee = normalise(uncomplete_sentence)
     words = read_words_from_line(phrase_normalisee)
@@ -55,17 +56,15 @@ def predict_word_with_dico(dico,uncomplete_sentence):
         predictable = ""
         predictable_proba = 0
         for k, v in dico[last].items():
-            if v > predictable_proba:
+            if v >= predictable_proba:
                 predictable_proba = v
                 predictable = k
-                # print "k,v:",k ,v
 
         words.append(predictable)
         return predictable, " ".join(words)
     else:
         return ""," ".join(words)
 
-### FONCTIONS DE PREDICTION ###
 def predict_word_with_dico_ordre2(dico,uncomplete_sentence):
     phrase_normalisee = normalise(uncomplete_sentence)
     words = read_words_from_line(phrase_normalisee)
@@ -77,21 +76,49 @@ def predict_word_with_dico_ordre2(dico,uncomplete_sentence):
         if last in dico[before_last]:
             proba_last = float(dico[before_last][last]) / float(sum([v for k,v in dico[before_last].iteritems()]))
     proba_last = proba_last * 1000.
-    # print "proba last", proba_last
     if last in dico:
         predictable = ""
         predictable_proba = 0.
         itemsLast = dico[last].iteritems()
         total = float(sum([v for k,v in itemsLast]))
-        # res = { k: float(v)/total for k,v in itemsLast }
-        # print "res", res
         for k, v in dico[last].iteritems():
             proba = (float(v)/total)*1000.
-            proba_cond = ((proba*proba_last)/proba)
-            # if v > 50:
-                # print "k,v",k,v, "-",proba, "-",proba_cond
+            proba_cond = (float(proba*proba_last)/float(proba))
             if proba_cond > predictable_proba:
-                # print "k,v,proba,pcond, predictable_proba:",k,v, proba,proba_cond,predictable_proba
+                predictable_proba = proba_cond
+                predictable = k
+
+        words.append(predictable)
+        return predictable, " ".join(words)
+    else:
+        return ""," ".join(words)
+
+def predict_word_with_dico_ordre3(dico,uncomplete_sentence):
+    phrase_normalisee = normalise(uncomplete_sentence)
+    words = read_words_from_line(phrase_normalisee)
+    last = words[-1]
+    before_last = words[-2]
+    before_before_last = words[-3]
+    proba_before_last = 1.
+    proba_last = 1.
+    if before_before_last in dico:
+        if before_last in dico[before_before_last]:
+            proba_before_last = float(dico[before_before_last][before_last]) / float(sum([v for k,v in dico[before_before_last].iteritems()]))
+    if before_last in dico:
+        if last in dico[before_last]:
+            proba_last = float(dico[before_last][last]) / float(sum([v for k,v in dico[before_last].iteritems()]))
+    proba_last = proba_last * 1000.
+    proba_before_last = proba_before_last * 1000.
+    proba_inter = float(proba_before_last * proba_last) / float(proba_before_last)
+    if last in dico:
+        predictable = ""
+        predictable_proba = 0.
+        itemsLast = dico[last].iteritems()
+        total = float(sum([v for k,v in itemsLast]))
+        for k, v in dico[last].iteritems():
+            proba = (float(v)/total)*1000.
+            proba_cond = ((proba*proba_inter)/proba)
+            if proba_cond > predictable_proba:
                 predictable_proba = proba_cond
                 predictable = k
 
@@ -114,18 +141,28 @@ print "######################################################"
 print "###### Prédiction avec une chaîne markovienne d'ordre 1 ######"
 
 _,res_phrase = predict_word_with_dico(dictionnaire,chaine)
-for i in range(15):
+for i in range(5):
     _,res_phrase = predict_word_with_dico(dictionnaire,res_phrase)
 
 print "Prédiction de:", chaine
 print "Résultat 1:\t",res_phrase
 
 print "######################################################"
-print "###### Prédiction avec une chaîne markovienne d'ordre 1 ######"
+print "###### Prédiction avec une chaîne markovienne d'ordre 2 ######"
 
 _,res_phrase = predict_word_with_dico_ordre2(dictionnaire,chaine)
-for i in range(15):
+for i in range(10):
     _,res_phrase = predict_word_with_dico_ordre2(dictionnaire,res_phrase)
 
 print "Prédiction de:", chaine
 print "Résultat 2:\t",res_phrase
+
+print "######################################################"
+print "###### Prédiction avec une chaîne markovienne d'ordre 3 ######"
+
+_,res_phrase = predict_word_with_dico_ordre3(dictionnaire,chaine)
+for i in range(5):
+    _,res_phrase = predict_word_with_dico_ordre3(dictionnaire,res_phrase)
+
+print "Prédiction de:", chaine
+print "Résultat 3:\t",res_phrase
