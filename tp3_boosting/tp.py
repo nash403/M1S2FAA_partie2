@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 """
     FAA Partie 2: TP3 Boosting
-    Auteur: Honoré Nintunze
+    Auteur: Honoré Nintunze et Matthieu Caron
 """
-__author__ = 'honore-nintunze'
 
 import numpy as np
 from sklearn import tree
